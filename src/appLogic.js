@@ -49,7 +49,7 @@ class AppLogic {
     }
 
     getActiveProject() {
-        return this.projects.find(project => p.id === this.activeProjectId) || this.projects[0];
+        return this.projects.find(project => project.id === this.activeProjectId) || this.projects[0];
     }
 
     setActiveProject(projectId) {
@@ -116,7 +116,7 @@ class AppLogic {
         if (!activeProject) return false;
 
         const initialCount = activeProject.todos.length;
-        activeProj.removeTodo(todoId);
+        activeProject.removeTodo(todoId);
 
         if (activeProject.todos.length < initialCount) {
             this.saveState();

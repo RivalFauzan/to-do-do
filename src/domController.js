@@ -4,8 +4,8 @@ import { format, parseISO } from 'date-fns';
 export class DomController {
     constructor() {
         // Cache DOM elements for later use
-        this.projectsListEl = document.getElementById('project-list');
-        this.todosListEl = document.getElementById('todo-list');
+        this.projectsListEl = document.getElementById('projects-list');
+        this.todosListEl = document.getElementById('todos-list');
         this.activeProjectTitleEl = document.getElementById('active-project-title');
 
         // Modals & buttons
@@ -42,14 +42,14 @@ export class DomController {
 
         projects.forEach(project => {
             const li = document.createElement('li');
-            li.className = `Project-item  ${project.id === activeProject.id ? 'active' : ''}`;
+            li.className = `project-item ${project.id === activeProject?.id ? 'active' : ''}`;
             li.dataset.projectId = project.id;
 
             li.innerHTML = `
                 <span class="project-name">${this.escapeHTML(project.name)}</span>
                 <span class="project-count">${project.todos.length}</span>
                 ${
-                    project.length > 1
+                    projects.length > 1
                         ? `<button class="btn-delete-project" data-id=${project.id} title="Delete Project">&times;</button>`
                         : ''
                 }
@@ -90,7 +90,7 @@ export class DomController {
                     <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-id="${todo.id}">
                     <span class="todo-title">${this.escapeHTML(todo.title)}</span>
                 </div>
-                <div class-"todo-right">
+                <div class="todo-right">
                     <span class="todo-date">${formatedDate}</span>
                     <button class="btn-delete-todo" data-id="${todo.id}" title="Delete task">&times;</button>
                 </div>
@@ -114,6 +114,12 @@ export class DomController {
               }
               return;
             }
+
+                        const projectItem = e.target.closest('.project-item');
+                        if (projectItem) {
+                                appState.setActiveProject(projectItem.dataset.projectId);
+                                this.render();
+                        }
         });
         //2. Todo Interactions: Toggle Complete, Delete, or Expand Details
         this.todosListEl.addEventListener('click', e => {
@@ -137,7 +143,7 @@ export class DomController {
 
             // Open Expand / Detail Modal
             const todoCard = e.target.closest('.todo-card');
-            if (todoCard && !e.target.classList.contains('todo-checbox')) {
+            if (todoCard && !e.target.classList.contains('todo-checkbox')) {
                 this.openDetailModal(todoId);
             }
         });
@@ -207,7 +213,7 @@ export class DomController {
 
         this.modalDetail.innerHTML = `
             <div class="modal-backdrop"></div>
-            <div classs="modal-content">
+            <div class="modal-content">
                 <button class="modal-close" data-close="modal">&times;</button>
                 <h3>Edit Task</h3>
                 <form id="form-edit-todo" data-id="${todo.id}">

@@ -1,4 +1,4 @@
-class Project {
+export class Project {
     constructor(name, id = Date.now().toString()) {
         this.id = id;
         this.name = name;
